@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>资源编辑</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/video/videoEdit.css}">
+    <script th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script th:src="@{/js/jquery.serializejson.js}"></script>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/img-control.js}"></script>
+    <script th:src="@{/js/util.js}"></script>
+</head>
+<body class="wrap-outer">
+<div class="main-div display-none">
+    <form class="layui-form layui-form-pane" action=""
+          id="videoEditForm" method="put" enctype="multipart/form-data">
+        <div style="width: 1000px; display: inline-block;">
+            <input type="hidden" name="videoId" id="videoId" th:value="${video.videoId}">
+            <!--  -->
+            <input type="hidden" name="createTime" id="createTime" th:value="${video.createTime}">
+            <!--  -->
+            <input type="hidden" name="havePoster" id="havePoster" th:value="${video.havePoster}">
+            <!--  -->
+            <input type="hidden" name="videoType" id="videoType" th:value="${video.videoType}">
+            <!--  -->
+            <input type="hidden" name="posterUpdateFlag" id="posterUpdateFlag" value="0">
+
+            <div style="display: inline-table; height: 180px;">
+
+                <div id="video-poster" class="video-poster-div">
+                    <i class="layui-icon layui-icon-close close"
+                       onclick="deleteImg(this)" id="img_del"></i>
+                    <div onclick="inputClick(this)" class="video-poster" th:switch="${video.havePoster}">
+                        <img th:case="'1'" onload='setImgStyle(this)' id='img' style='display: none;'
+                             th:src="@{'/getPoster/'+ ${video.videoId}}"/>
+                        <P th:case="'0'" th:text="${'上传图片'}"></P>
+                    </div>
+                    <input onchange="previewImage(this)" style="display: none;"
+                           type="file" name="videoPoster" id="previewImg">
+                </div>
+
+                <div class="video-info">
+                    <div class="layui-form-item margin-bottom10">
+                        <label class="layui-form-label">动画名</label>
+                        <div class="layui-input-block">
+                            <input name="videoName" id="videoName" lay-verify="videoName" th:value="${video.videoName}"
+                                   autocomplete="off" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item margin-bottom5">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">播出时间</label>
+                            <div class="layui-input-inline">
+                                <input name="videoBroadcastTime" readonly="readonly" class="layui-input" type="text"
+                                       th:value="${#dates.format(video.videoBroadcastTime,'yyyy-MM-dd')}"
+                                       lay-verify="videoBroadcastTime" id="videoBroadcastTime" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">播出季</label>
+                            <div class="layui-input-inline">
+                                <!--动画-->
+                                <select name="animationSeason" id="videoSeason" th:if="${video.videoType == '动画'}"
+                                        lay-filter="videoSeason">
+                                    <option value="冬番" th:selected="${video.videoSeason == '冬番'}">冬番</option>
+                                    <option value="春番" th:selected="${video.videoSeason == '春番'}">春番</option>
+                                    <option value="夏番" th:selected="${video.videoSeason == '夏番'}">夏番</option>
+                                    <option value="秋番" th:selected="${video.videoSeason == '秋番'}">秋番</option>
+                                    <option value="特别篇" th:selected="${video.videoSeason == '特别篇'}">特别篇</option>
+                                    <option value="OVA/OAD" th:selected="${video.videoSeason == 'OVA/OAD'}">OVA/OAD
+                                    </option>
+                                    <option value="映画" th:selected="${video.videoSeason == '映画'}">映画</option>
+                                    <option value="其他" th:selected="${video.videoSeason == '其他'}">其他</option>
+                                </select>
+                                <!-- 番剧 -->
+                                <select name="dramaSeason" th:if="${video.videoType == '番剧'}">
+                                    <option value="冬季" th:selected="${video.videoSeason == '冬季'}">冬季</option>
+                                    <option value="春季" th:selected="${video.videoSeason == '春季'}">春季</option>
+                                    <option value="夏季" th:selected="${video.videoSeason == '夏季'}">夏季</option>
+                                    <option value="秋季" th:selected="${video.videoSeason == '秋季'}">秋季</option>
+                                    <option value="SP" th:selected="${video.videoSeason == 'SP'}">SP</option>
+                                </select>
+                                <!---->
+                                <input type="hidden" name="videoCountry" id="videoCountry"
+                                       th:value="${video.videoCountry}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item margin-bottom5">
+                        <div class="layui-inline" th:if="${video.videoEpisode != null}">
+                            <label class="layui-form-label">集数</label>
+                            <div class="layui-input-inline">
+                                <input name="videoEpisode" lay-verify="videoEpisode"
+                                       id="videoEpisode" autocomplete="off" class="layui-input"
+                                       value="12" type="text" th:value="${video.videoEpisode}">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('11')">11
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('12')">12
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('13')">13
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('23')">23
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('24')">24
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('25')">25
+                            </div>
+                            <div class="layui-btn layui-btn-normal layui-btn-sm"
+                                 onclick="setEpisode('26')">26
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item margin-bottom5">
+                        <div class="layui-inline" th:if="${video.videoSource != null}">
+                            <label class="layui-form-label">原作类型</label>
+                            <div class="layui-input-inline">
+                                <select name="videoSource" id="videoSource"
+                                        lay-filter="videoSource">
+                                    <option value="漫画" th:selected="${video.videoSource == '漫画'}">漫画</option>
+                                    <option value="轻小说" th:selected="${video.videoSource == '轻小说'}">轻小说</option>
+                                    <option value="游戏" th:selected="${video.videoSource == '游戏'}">游戏</option>
+                                    <option value="原创" th:selected="${video.videoSource == '原创'}">原创</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="resource-info" id="resource-info">
+                <div class="layui-btn layui-btn-normal layui-btn-sm"
+                     onclick="addResource()">添加资源
+                </div>
+                <div th:replace="~{common/resourceItem :: resourceItemWithData}"></div>
+            </div>
+            <!---->
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">详情</label>
+                <div class="layui-input-block">
+						<textarea placeholder="请输入内容" class="layui-textarea textarea"
+                                  name="videoDetailInfo" id="videoDetailInfo"
+                                  th:text="${video.videoDetailInfo}"></textarea>
+                </div>
+            </div>
+            <!---->
+            <div class="layui-form-item layui-form-text margin-top10">
+                <label class="layui-form-label">备注</label>
+                <div class="layui-input-block">
+						<textarea placeholder="请输入内容" class="layui-textarea textarea"
+                                  name="videoRemark" id="videoRemark" th:text="${video.videoRemark}"></textarea>
+                </div>
+            </div>
+        </div>
+        <!---->
+        <div class="submit-button-div">
+            <div class="layui-btn layui-btn-normal" lay-submit="" lay-filter="submitButton">
+                提交
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="resource-info-model-div" class="display-none">
+    <div th:replace="~{common/resourceItem :: resourceItem}"></div>
+</div>
+</body>
+<script th:inline="javascript">
+    $(function () {
+        $("#video-poster").mouseover(function () {
+            var imgsrc = $("#img_del").next().find('img').attr('src');
+            if (typeof (imgsrc) != "undefined") {
+                $("#img_del").css("display", "block");
+            }
+        });
+        $("#video-poster").mouseout(function () {
+            $("#img_del").css("display", "none");
+        });
+    });
+
+    var form;
+    var laydate;
+    layui.use(['form', 'util', 'laydate'], function () {
+        form = layui.form;
+        laydate = layui.laydate;
+        var util = layui.util;
+
+        //执行
+        util.fixbar({
+            showHeight: "100"
+        });
+
+        laydate.render({
+            elem: '#videoBroadcastTime',
+            theme: '#5FB878',
+            type: 'date'
+        });
+
+        /**
+         * 为页面上已有的资源录入时间绑定layui的时间控件
+         * */
+        $('input[name="resourceRecordTime"]').each(function () {
+            var resourceRecordTimeId = $(this).attr('id');
+            if (resourceRecordTimeId.indexOf("{id}") < 0) {
+                console.log(resourceRecordTimeId);
+                laydate.render({
+                    elem: '#' + resourceRecordTimeId,
+                    theme: '#5FB878',
+                    type: 'date'
+                });
+            }
+        });
+
+        //页面一打开就执行弹层
+        layer.ready(function () {
+            $(".main-div").show();
+        });
+
+        //自定义验证规则
+        form.verify({
+            videoName: function (value) {
+                if (value.trim().length <= 0) {
+                    $("#videoName").val("");
+                    return '请输入资源名';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(submitButton)', function (data) {
+            var loadIndex = layer.load(1);
+            var form = new FormData($("#videoEditForm")[0]);
+            var url = /*[[@{/video}]]*/'';
+            var method = "PUT";
+            submitForm(url, method, form, function (resp) {
+                layer.close(loadIndex);
+                console.log(resp);
+                if (resp.code == 0) {
+                    if (resp.data == 1) {
+                        layer.alert("编辑成功！！！", function (index) {
+                            layer.close(index);
+                            // 回调父页面的查询
+                            parent.callBackSearch();
+                            // 关闭页面
+                            var indexP = parent.layer
+                                .getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(indexP); //再执行关闭
+                        });
+                    } else {
+                        layer.alert("编辑失败，请核对数据！！！", {
+                            title: '编辑失败'
+                        });
+                    }
+                } else {
+                    layer.alert(resp.msg, {
+                        title: '程序异常'
+                    })
+                }
+            });
+            return false;
+        });
+
+    });
+
+    function addResource() {
+        var id = new Date().getTime().toString();
+        var resourseHtml = $("#resource-info-model-div").html();
+        resourseHtml = resourseHtml.replace(/{id}/g, id);
+        $("#resource-info").append(resourseHtml);
+
+        form.render('select'); //刷新select选择框渲染
+        laydate.render({
+            elem: '#resourceRecordTime' + id,
+            type: 'date',
+            theme: '#5FB878',
+            value: new Date()
+        });
+
+        $("#resource" + id).show(200);
+    }
+
+    function resourceDel(resourceId) {
+        $("#" + resourceId).slideUp(200, function () {
+            $("#" + resourceId).remove();
+        });
+    }
+
+    function setEpisode(episode) {
+        $("#videoEpisode").val(episode);
+    }
+</script>
+</html>

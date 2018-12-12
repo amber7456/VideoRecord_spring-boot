@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/css/video/videoSearch.css}">
+    <script th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script th:src="@{/js/jquery.serializejson.js}"></script>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/img-control.js}"></script>
+    <script th:src="@{/js/video/videoSearch.js}"></script>
+    <script th:src="@{/js/video/video-detail-edit-del.js}"></script>
+    <script th:src="@{/js/util.js}"></script>
+</head>
+<body style="display: none;">
+<!-- 动画搜索条件     播出时间 存储地址 季度 连载时长 资源类型 格式 分辨率 字幕类型 资源名 -->
+<!-- 番剧检索条件     播出时间 存储地址 国别 季度 格式 分辨率 资源名 -->
+<!-- 电影搜索条件     播出时间 存储地址 国别 格式 分辨率 资源名  -->
+<!-- 记录片搜索条件   播出时间 存储地址 国别 格式 分辨率 资源名  -->
+<!-- 网络视频搜索条件 播出时间 存储地址 格式 分辨率 资源名 -->
+<div>
+    <form class="layui-form layui-form-pane" id="searchVideo"
+          method="get" enctype="multipart/form-data" th:action="@{/videos}">
+        <div class="search-item">
+            <div th:replace="~{common/videoType :: videoType}"></div>
+            <input type="hidden" name="videoType" id="videoType" th:value="${req.videoType}">
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" id="yearRangeDiv">
+                <label class="layui-form-label">播出时间</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <input name="yearRange" id="yearRange" autocomplete="off" th:value="${req.yearRange}"
+                           readonly="readonly" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-inline" id="addressDiv">
+                <label class="layui-form-label">存储地址</label>
+                <div class="layui-input-inline">
+                    <select name="address" id="address">
+                        <option value="ALL">全部</option>
+                        <option th:each="disk,diskStat:${diskList}" th:value="${disk.diskId}"
+                                th:selected="${req.address == disk.diskId }"
+                                th:text="${disk.videoType+ ':'+  disk.diskName}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="animationSeasonDiv">
+                <label class="layui-form-label">播出季</label>
+                <div class="layui-input-inline width120">
+                    <select name="animationSeason" id="animationSeason" class="width200">
+                        <option value="ALL" th:selected="${req.animationSeason == 'ALL'}">全部</option>
+                        <option value="冬番" th:selected="${req.animationSeason eq '冬番'}">冬番</option>
+                        <option value="春番" th:selected="${req.animationSeason == '春番'}">春番</option>
+                        <option value="夏番" th:selected="${req.animationSeason == '夏番'}">夏番</option>
+                        <option value="秋番" th:selected="${req.animationSeason == '秋番'}">秋番</option>
+                        <option value="OVA/OAD" th:selected="${req.animationSeason == 'OVA/OAD'}">OVA/OAD</option>
+                        <option value="映画" th:selected="${req.animationSeason == '映画'}">映画</option>
+                        <option value="其他" th:selected="${req.animationSeason == '其他'}">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="videoCountryDiv"
+                 style="display: none;">
+                <label class="layui-form-label">国别</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <select name="country" id="country" style="width: 200px;">
+                        <option value="ALL" th:selected="${req.country == 'ALL'}">全部</option>
+                        <option value="日本" th:selected="${req.country == '日本'}">日本</option>
+                        <option value="美国" th:selected="${req.country == '美国'}">美国</option>
+                        <option value="英国" th:selected="${req.country == '英国'}">英国</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="dramaSeasonDiv" style="display: none;">
+                <label class="layui-form-label">播出季</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <select name="dramaSeason" id="dramaSeason" style="width: 200px;">
+                        <option value="ALL" th:selected="${req.dramaSeason == 'ALL'}">全部</option>
+                        <option value="冬季" th:selected="${req.dramaSeason == '冬季'}">冬季</option>
+                        <option value="春季" th:selected="${req.dramaSeason == '春季'}">春季</option>
+                        <option value="夏季" th:selected="${req.dramaSeason == '夏季'}">夏季</option>
+                        <option value="秋季" th:selected="${req.dramaSeason == '秋季'}">秋季</option>
+                        <option value="SP" th:selected="${req.dramaSeason == 'SP'}">SP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="serializeTimeDiv">
+                <label class="layui-form-label">连载时长</label>
+                <div class="layui-input-inline" style="width: 120px;">
+                    <select name="serializeTime" id="serializeTime">
+                        <option value="ALL" th:selected="${req.serializeTime == 'ALL'}">全部</option>
+                        <option value="1" th:selected="${req.serializeTime == '1'}">季番</option>
+                        <option value="2" th:selected="${req.serializeTime == '2'}">半年番</option>
+                        <option value="3" th:selected="${req.serializeTime == '3'}">年番</option>
+                        <option value="4" th:selected="${req.serializeTime == '4'}">长连载</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-label">收录信息</div>
+            <div class="layui-inline" id="typeDiv">
+                <div class="layui-input-inline">
+                    <select name="resourceType" id="resourceType">
+                        <option value="ALL" th:selected="${req.resourceType == 'ALL'}">全部资源</option>
+                        <option value="NORMAL" th:selected="${req.resourceType == 'NORMAL'}">普通资源</option>
+                        <option value="BD" th:selected="${req.resourceType == 'BD'}">BD资源</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="formatDiv">
+                <div class="layui-input-inline">
+                    <select name="format" id="format">
+                        <option value="ALL" th:selected="${req.format == 'ALL'}">全部格式</option>
+                        <option value="MP4" th:selected="${req.format == 'MP4'}">MP4</option>
+                        <option value="MKV" th:selected="${req.format == 'MKV'}">MKV</option>
+                        <option value="RMVB" th:selected="${req.format == 'RMVB'}">RMVB</option>
+                        <option value="AVI" th:selected="${req.format == 'AVI'}">AVI</option>
+                        <option value="WMV" th:selected="${req.format == 'WMV'}">WMV</option>
+                        <option value="其他" th:selected="${req.format == '其他'}">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="resolutionDiv">
+                <div class="layui-input-inline">
+                    <select name="resolution" id="resolution">
+                        <option value="ALL" th:selected="${req.resolution == 'ALL'}">全部分辨率</option>
+                        <option value="1280*720" th:selected="${req.resolution == '1280*720'}">1280*720</option>
+                        <option value="1920*1080" th:selected="${req.resolution == '1920*1080'}">1920*1080</option>
+                        <option value="1440*1080" th:selected="${req.resolution == '1440*1080'}">1440*1080</option>
+                        <option value="848*480" th:selected="${req.resolution == '848*480'}">848*480</option>
+                        <option value="1024*576" th:selected="${req.resolution == '1024*576'}">1024*576</option>
+                        <option value="960*576" th:selected="${req.resolution == '960*576'}">960*576</option>
+                        <option value="3840*2160" th:selected="${req.resolution == '3840*2160'}">3840*2160</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline" id="subTypeDiv">
+                <div class="layui-input-inline">
+                    <select name="subType" id="subType">
+                        <option value="ALL" th:selected="${req.subType == 'ALL'}">全部字幕类型</option>
+                        <option value="内嵌" th:selected="${req.subType == '内嵌'}">内嵌</option>
+                        <option value="封装" th:selected="${req.subType == '封装'}">封装</option>
+                        <option value="外挂" th:selected="${req.subType == '外挂'}">外挂</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline" id="videoNameDiv">
+                <label class="layui-form-label">资源名</label>
+                <div class="layui-input-block" style="width: 576px;">
+                    <input name="videoName" id="videoName" autocomplete="off" th:value="${req.videoName}"
+                           class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-inline button-div">
+                <button class="layui-btn layui-btn-normal">查询</button>
+                <div class="layui-btn layui-btn-normal" th:onclick="${'reset()'}">重置</div>
+                <div class="layui-btn" th:onclick="${'excelDownload()'}">下载列表</div>
+            </div>
+        </div>
+    </form>
+    <form id="searchVideoFormHide" method="GET" th:action="@{/videos}">
+        <!--  -->
+        <input type="hidden" id="videoNameHide" name="videoName" th:value="${req.videoName}">
+        <!--  -->
+        <input type="hidden" id="subTypeHide" name="subType" th:value="${req.subType}">
+        <!--  -->
+        <input type="hidden" id="resolutionHide" name="resolution" th:value="${req.resolution}">
+        <!--  -->
+        <input type="hidden" id="formatHide" name="format" th:value="${req.format}">
+        <!--  -->
+        <input type="hidden" id="resourceTypeHide" name="resourceType" th:value="${req.resourceType}">
+        <!--  -->
+        <input type="hidden" id="serializeTimeHide" name="serializeTime" th:value="${req.serializeTime}">
+        <!--  -->
+        <input type="hidden" id="dramaSeasonHide" name="dramaSeason" th:value="${req.dramaSeason}">
+        <!--  -->
+        <input type="hidden" id="countryHide" name="country" th:value="${req.country}">
+        <!--  -->
+        <input type="hidden" id="animationSeasonHide" name="animationSeason" th:value="${req.animationSeason}">
+        <!--  -->
+        <input type="hidden" id="addressHide" name="address" th:value="${req.address}">
+        <!--  -->
+        <input type="hidden" id="yearRangeHide" name="yearRange" th:value="${req.yearRange}">
+        <!--  -->
+        <input type="hidden" id="videoTypeHide" name="videoType" th:value="${req.videoType}">
+    </form>
+</div>
+<div id="video_list_div" class="video-list-div" th:if="${videoList!=null}">
+    <div th:replace="~{common/videoList :: videoList}"></div>
+</div>
+</body>
+<script>
+    $(function () {
+        // 重置查询条件
+        setSearchCondition(0);
+        // 监听点击事件
+        $(".edit-div").click(function (event) {
+            event.stopPropagation(); // 取消事件冒泡
+            $(this).parent().find(".edit-list").slideToggle(200); // 按钮的toggle,如果div是可见的,点击按钮切换为隐藏的;如果是隐藏的,切换为可见的。
+            var thisId = $(this).parent().find(".edit-list").attr("id");
+            $(".edit-list").each(function () {
+                if ($(this).attr("id") != thisId) {
+                    $(this).slideUp(200);
+                }
+            });
+            return false;
+        });
+        //初始化 年范围选择
+        // if ($("#yearRange").val().length == 0) {
+        //     var range = (new Date().getFullYear() - 6) + ' - '
+        //         + new Date().getFullYear();
+        //     $("#yearRange").val(range);
+        // }
+    });
+
+    //点击空白处隐藏弹出层，下面为滑动消失效果和淡出消失效果。
+    $(document).click(function (event) {
+        var _con = $(".edit-list"); // 设置目标区域
+        if (!_con.is(event.target) && _con.has(event.target).length === 0) { // Mark 1
+            $(".edit-list").slideUp(200); //滑动消失
+        }
+    });
+
+    var form;
+    var laydate;
+    var util;
+    var layer;
+
+    layui.use(['form', 'laydate', 'util'], function () {
+        form = layui.form;
+        laydate = layui.laydate;
+        util = layui.util;
+        layer = layui.layer;
+
+        form.render('select');
+
+        //执行
+        util.fixbar({
+            showHeight: "100"
+        });
+
+        laydate.render({
+            elem: '#yearRange',
+            type: 'year',
+            /*value : range, */
+            theme: '#5FB878',
+            range: true
+        });
+
+        layer.ready(function () {
+            $("body").show();
+        });
+    });
+
+    function setSearchCondition(second) {
+        var videoType = $("#videoType").val();
+        switch (videoType) {
+            case "动画":
+                $("#videoCountryDiv").hide();
+                $("#dramaSeasonDiv").hide();
+
+                $("#animationSeasonDiv").fadeIn(second);
+                $("#serializeTimeDiv").fadeIn(second);
+                $("#typeDiv").fadeIn(second);
+                $("#subTypeDiv").fadeIn(second);
+                break;
+            case "番剧":
+                $("#animationSeasonDiv").hide();
+                $("#serializeTimeDiv").hide();
+                $("#typeDiv").hide();
+                $("#subTypeDiv").hide();
+
+                $("#videoCountryDiv").fadeIn(second);
+                $("#dramaSeasonDiv").fadeIn(second);
+                break;
+            case "电影":
+                $("#animationSeasonDiv").hide();
+                $("#serializeTimeDiv").hide();
+                $("#typeDiv").hide();
+                $("#subTypeDiv").hide();
+                $("#dramaSeasonDiv").hide();
+
+                $("#videoCountryDiv").fadeIn(second);
+                break;
+            case "记录片":
+                $("#animationSeasonDiv").hide();
+                $("#serializeTimeDiv").hide();
+                $("#typeDiv").hide();
+                $("#subTypeDiv").hide();
+                $("#dramaSeasonDiv").hide();
+
+                $("#videoCountryDiv").fadeIn(second);
+                break;
+            case "网络视频":
+                $("#animationSeasonDiv").hide();
+                $("#serializeTimeDiv").hide();
+                $("#typeDiv").hide();
+                $("#subTypeDiv").hide();
+                $("#dramaSeasonDiv").hide();
+                $("#videoCountryDiv").hide();
+                break;
+        }
+    }
+
+    function clickVideoTypeButton(vtt) {
+        var pitchId;
+        $("#video_type_item").children().each(function () {
+            if ($(this).hasClass("video-type-tab-this")) {
+                pitchId = $(this).attr("id");
+            }
+        });
+        if (pitchId !== $(vtt).attr("id")) {
+            $(vtt).addClass('video-type-tab-this');
+            $(vtt).siblings().removeClass('video-type-tab-this');
+            $("#videoType").val($(vtt).attr("id"));
+            setSearchCondition(300);// 设置 搜索项
+            reset();// 重置 表单
+        } else {
+            console.log("已选中，无操作");
+        }
+    }
+
+    function excelDownload() {
+        var videoList = $("#video_list_div").html();
+        if (videoList.length > 0) {
+            var searchVideoFormHide = $("#searchVideoFormHide");
+            var url = searchVideoFormHide.attr("action");
+            searchVideoFormHide.attr("action", "excelDownload");
+            searchVideoFormHide.submit();
+            searchVideoFormHide.attr("action", url);
+        } else {
+            layer.alert('请先执行查询操作！！！', {
+                offset: "200px"
+            });
+        }
+    }
+
+    function reset() {
+        // 重置 表单
+        $('#searchVideo')[0].reset();
+        // 初始化 年范围选择
+        var range = (new Date().getFullYear() - 5) + ' - '
+            + new Date().getFullYear();
+        $("#yearRange").val(range);
+        form.render('select');
+    }
+
+    window.callBackSearch = function () {
+        $("#searchVideoFormHide").submit();
+    };
+</script>
+</html>

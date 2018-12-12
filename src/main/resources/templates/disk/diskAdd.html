@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>硬盘添加</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <script th:src="@{/js/jquery-2.1.4.js}"></script>
+    <script th:src="@{/js/jquery.serializejson.js}"></script>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{/js/util.js}"></script>
+    <style type="text/css">
+        html {
+            margin: 15px 0px 0px 15px;
+            width: calc(100% - 15px);
+            height: calc(100% - 15px);
+        }
+
+        .width650 {
+            width: 650px;
+        }
+
+        .resize-none {
+            resize: none;
+        }
+
+        .float-right {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+<div class="width650">
+    <form class="layui-form layui-form-pane" action=""
+          lay-filter="diskAddForm" id="diskAddForm">
+        <div class="layui-form-item">
+            <label class="layui-form-label">硬盘名</label>
+            <div class="layui-input-block">
+                <input name="diskName" lay-verify="diskName" id="diskName"
+                       autocomplete="off" class="layui-input" type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">硬盘容量</label>
+                <div class="layui-input-inline">
+                    <select name="diskCapacity" id="diskCapacity"
+                            lay-filter="diskCapacity">
+                        <option value="500G">500G</option>
+                        <option value="1T">1T</option>
+                        <option value="2T" selected="selected">2T</option>
+                        <option value="3T">3T</option>
+                        <option value="4T">4T</option>
+                        <option value="6T">6T</option>
+                        <option value="8T">8T</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-form-label">存储类型</label>
+                <div class="layui-input-inline">
+                    <select name="videoType" id="videoType" lay-filter="videoType">
+                        <option value="动画" selected="selected">动画</option>
+                        <option value="番剧">番剧</option>
+                        <option value="电影">电影</option>
+                        <option value="纪录片">纪录片</option>
+                        <option value="网络视频">网络视频</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <textarea id="remark" name="remark" class="layui-textarea resize-none"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="float-right layui-btn layui-btn-normal"
+                 lay-submit="" lay-filter="submitButton">提交
+            </div>
+        </div>
+
+    </form>
+</div>
+</body>
+<script th:inline="javascript">
+    layui.use(['form'], function () {
+
+        var form = layui.form;
+        form.render(); //刷新
+
+        //自定义验证规则
+        form.verify({
+            diskName: function (value) {
+                if (value.length <= 0) {
+                    return '请输入硬盘名';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(submitButton)', function (data) {
+            var loadIndex = layer.load(1);
+            var form = new FormData($("#diskAddForm")[0]);
+            var url = /*[[@{/disk}]]*/'';
+            var method = "POST";
+            submitForm(url, method, form, function (resp) {
+                layer.close(loadIndex);
+                if (resp.code == 0) {
+                    if (resp.data == 1) {
+                        layer.alert("添加成功！！！", {
+                            offset: '200px'
+                        }, function (index) {
+                            layer.close(index);
+                            $('#diskAddForm')[0].reset();
+                        });
+                    } else {
+                        layer.alert("添加失败，请核对数据！！！", {
+                            title: '添加失败',
+                            offset: '200px'
+                        });
+                    }
+                } else {
+                    layer.alert(resp.msg, {
+                        title: '程序异常：',
+                        offset: '200px'
+                    })
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+</html>

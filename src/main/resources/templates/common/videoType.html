@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>videoType</title>
+</head>
+<body>
+<div class="layui-inline" id="video_type_item" th:fragment="videoType">
+    <div th:class="${req.videoType == '动画'?'video-type-tab-this':''}+' video-type-tab'"
+         onclick="clickVideoTypeButton(this)" id="动画">动画
+    </div>
+    <div th:class="${req.videoType == '番剧'?'video-type-tab-this':''}+' video-type-tab'"
+         onclick="clickVideoTypeButton(this)" id="番剧">番剧
+    </div>
+    <div th:class="${req.videoType == '电影'?'video-type-tab-this':''}+' video-type-tab'"
+         onclick="clickVideoTypeButton(this)" id="电影">电影
+    </div>
+    <div th:class="${req.videoType == '记录片'?'video-type-tab-this':''}+' video-type-tab'"
+         onclick="clickVideoTypeButton(this)" id="记录片">记录片
+    </div>
+    <div th:class="${req.videoType == '网络视频'?'video-type-tab-this':''}+' video-type-tab'"
+         onclick="clickVideoTypeButton(this)" id="网络视频">网络视频
+    </div>
+</div>
+</body>
+</html>

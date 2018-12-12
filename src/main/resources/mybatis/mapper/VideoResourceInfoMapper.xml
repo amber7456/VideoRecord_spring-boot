@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.videorecord.dao.mapper.VideoResourceInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.videorecord.entity.VideoResourceInfo" >
+    <id column="resource_id" property="resourceId" jdbcType="INTEGER" />
+    <result column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="resource_type" property="resourceType" jdbcType="VARCHAR" />
+    <result column="resource_format" property="resourceFormat" jdbcType="VARCHAR" />
+    <result column="resource_resolution" property="resourceResolution" jdbcType="VARCHAR" />
+    <result column="resource_sub" property="resourceSub" jdbcType="VARCHAR" />
+    <result column="resource_sub_type" property="resourceSubType" jdbcType="VARCHAR" />
+    <result column="resource_record_time" property="resourceRecordTime" jdbcType="TIMESTAMP" />
+    <result column="resource_record_address" property="resourceRecordAddress" jdbcType="VARCHAR" />
+    <result column="resource_remark" property="resourceRemark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    resource_id, video_id, resource_type, resource_format, resource_resolution, resource_sub, 
+    resource_sub_type, resource_record_time, resource_record_address, resource_remark
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.videorecord.dao.pojo.VideoResourceInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from video_resource_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from video_resource_info
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from video_resource_info
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.videorecord.dao.pojo.VideoResourceInfoExample" >
+    delete from video_resource_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.videorecord.entity.VideoResourceInfo" >
+    insert into video_resource_info (resource_id, video_id, resource_type, 
+      resource_format, resource_resolution, resource_sub, 
+      resource_sub_type, resource_record_time, 
+      resource_record_address, resource_remark)
+    values (#{resourceId,jdbcType=INTEGER}, #{videoId,jdbcType=VARCHAR}, #{resourceType,jdbcType=VARCHAR}, 
+      #{resourceFormat,jdbcType=VARCHAR}, #{resourceResolution,jdbcType=VARCHAR}, #{resourceSub,jdbcType=VARCHAR}, 
+      #{resourceSubType,jdbcType=VARCHAR}, #{resourceRecordTime,jdbcType=TIMESTAMP}, 
+      #{resourceRecordAddress,jdbcType=VARCHAR}, #{resourceRemark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.videorecord.entity.VideoResourceInfo" >
+    insert into video_resource_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resourceId != null" >
+        resource_id,
+      </if>
+      <if test="videoId != null" >
+        video_id,
+      </if>
+      <if test="resourceType != null" >
+        resource_type,
+      </if>
+      <if test="resourceFormat != null" >
+        resource_format,
+      </if>
+      <if test="resourceResolution != null" >
+        resource_resolution,
+      </if>
+      <if test="resourceSub != null" >
+        resource_sub,
+      </if>
+      <if test="resourceSubType != null" >
+        resource_sub_type,
+      </if>
+      <if test="resourceRecordTime != null" >
+        resource_record_time,
+      </if>
+      <if test="resourceRecordAddress != null" >
+        resource_record_address,
+      </if>
+      <if test="resourceRemark != null" >
+        resource_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resourceId != null" >
+        #{resourceId,jdbcType=INTEGER},
+      </if>
+      <if test="videoId != null" >
+        #{videoId,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        #{resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceFormat != null" >
+        #{resourceFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceResolution != null" >
+        #{resourceResolution,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceSub != null" >
+        #{resourceSub,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceSubType != null" >
+        #{resourceSubType,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceRecordTime != null" >
+        #{resourceRecordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceRecordAddress != null" >
+        #{resourceRecordAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceRemark != null" >
+        #{resourceRemark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.videorecord.dao.pojo.VideoResourceInfoExample" resultType="java.lang.Integer" >
+    select count(*) from video_resource_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update video_resource_info
+    <set >
+      <if test="record.resourceId != null" >
+        resource_id = #{record.resourceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.videoId != null" >
+        video_id = #{record.videoId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceType != null" >
+        resource_type = #{record.resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceFormat != null" >
+        resource_format = #{record.resourceFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceResolution != null" >
+        resource_resolution = #{record.resourceResolution,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceSub != null" >
+        resource_sub = #{record.resourceSub,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceSubType != null" >
+        resource_sub_type = #{record.resourceSubType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceRecordTime != null" >
+        resource_record_time = #{record.resourceRecordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.resourceRecordAddress != null" >
+        resource_record_address = #{record.resourceRecordAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceRemark != null" >
+        resource_remark = #{record.resourceRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update video_resource_info
+    set resource_id = #{record.resourceId,jdbcType=INTEGER},
+      video_id = #{record.videoId,jdbcType=VARCHAR},
+      resource_type = #{record.resourceType,jdbcType=VARCHAR},
+      resource_format = #{record.resourceFormat,jdbcType=VARCHAR},
+      resource_resolution = #{record.resourceResolution,jdbcType=VARCHAR},
+      resource_sub = #{record.resourceSub,jdbcType=VARCHAR},
+      resource_sub_type = #{record.resourceSubType,jdbcType=VARCHAR},
+      resource_record_time = #{record.resourceRecordTime,jdbcType=TIMESTAMP},
+      resource_record_address = #{record.resourceRecordAddress,jdbcType=VARCHAR},
+      resource_remark = #{record.resourceRemark,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.videorecord.entity.VideoResourceInfo" >
+    update video_resource_info
+    <set >
+      <if test="videoId != null" >
+        video_id = #{videoId,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        resource_type = #{resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceFormat != null" >
+        resource_format = #{resourceFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceResolution != null" >
+        resource_resolution = #{resourceResolution,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceSub != null" >
+        resource_sub = #{resourceSub,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceSubType != null" >
+        resource_sub_type = #{resourceSubType,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceRecordTime != null" >
+        resource_record_time = #{resourceRecordTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="resourceRecordAddress != null" >
+        resource_record_address = #{resourceRecordAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceRemark != null" >
+        resource_remark = #{resourceRemark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.videorecord.entity.VideoResourceInfo" >
+    update video_resource_info
+    set video_id = #{videoId,jdbcType=VARCHAR},
+      resource_type = #{resourceType,jdbcType=VARCHAR},
+      resource_format = #{resourceFormat,jdbcType=VARCHAR},
+      resource_resolution = #{resourceResolution,jdbcType=VARCHAR},
+      resource_sub = #{resourceSub,jdbcType=VARCHAR},
+      resource_sub_type = #{resourceSubType,jdbcType=VARCHAR},
+      resource_record_time = #{resourceRecordTime,jdbcType=TIMESTAMP},
+      resource_record_address = #{resourceRecordAddress,jdbcType=VARCHAR},
+      resource_remark = #{resourceRemark,jdbcType=VARCHAR}
+    where resource_id = #{resourceId,jdbcType=INTEGER}
+  </update>
+</mapper>

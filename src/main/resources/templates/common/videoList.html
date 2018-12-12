@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>videoList</title>
+</head>
+<style>
+
+</style>
+<body>
+<div th:fragment="videoList" th:id='video_list_div_ +${year.year}' class='year-div'
+     th:each="year,iterStat:${videoList.yearData}">
+
+    <div class='year-title'>[[${year.year}]]</div>
+    <div class='countMsg-title'>[[${year.countMsg}]]</div>
+
+    <div class='season-div' th:id=" ${year.year}+ ${season.type}"
+         th:each="season,seasonStat:${year.season}">
+        <div class='season-title'> [[${season.type+#lists.size(season.videoInfo)+'部'}]]</div>
+        <div class="video-box" th:each="video:${season.videoInfo}" th:id="${video.videoId}">
+            <i class='layui-icon bd-style' th:if="${video.haveBdResource == '1'}">&#xe643;</i>
+            <div class="video-poster" th:id=" video-poster-+ ${video.videoId}">
+                <img th:if="${video.havePoster == '1'}"
+                     th:onload="${'setImgStyle(this)'}"
+                     th:onclick="${'enlargeImg(this)'}"
+                     style='display: none;'
+                     th:src="@{'/getPoster/'+ ${video.videoId}}">
+            </div>
+            <div th:id="video-poster-hide-+ ${video.videoId}" style="display: none;">
+                <img th:if="${video.havePoster == '1'}"
+                     th:src="@{'/getPoster/'+ ${video.videoId}}">
+            </div>
+            <div class="video-name" th:onclick="'javascript:detail(\''+${video.videoId}+'\')'">
+                [[${video.videoName}]]
+            </div>
+            <div class="video-date">[[${#dates.format(video.videoBroadcastTime,'yyyy-MM-dd')+"
+                "+#dates.dayOfWeekName(video.videoBroadcastTime)}]]
+            </div>
+            <div style="float: right; width: 40px; margin: 3px 0px 3px 3px;">
+                <div class="edit-div layui-btn layui-btn-xs layui-btn-normal" style="width: 40px;">
+                    <i class="layui-icon" style="margin-right: 0px;">&#xe65f;</i>
+                </div>
+                <div class="edit-list" th:id="edit-list-+ ${video.videoId}"
+                     style="display: none; padding: 5px;">
+                    <div style="margin: 5px auto; width: 100%;" class="layui-btn layui-btn-sm layui-btn-normal"
+                         th:onclick="'javascript:editVideo(this,\'' +${video.videoId}+'\')'">
+                        <i class="layui-icon">&#xe642;</i>编辑
+                    </div>
+                    <div style="margin: 5px auto; width: 100%;" class="layui-btn layui-btn-sm layui-btn-danger"
+                         th:onclick="'javascript:deleteVideo(this,\''+${video.videoId}+'\',\''+${video.videoName}+'\')'">
+                        <i class="layui-icon">&#xe640;</i>删除
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class='layui-bg-blue' th:if="${ seasonStat.index+1 != #lists.size(year.season)}"/>
+    </div>
+    <hr class='layui-bg-green' th:if="${ iterStat.index+1 != #lists.size(videoList.yearData)}"/>
+</div>
+
+</body>
+</html>

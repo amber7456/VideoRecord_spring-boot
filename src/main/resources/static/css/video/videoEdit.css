@@ -1,0 +1,131 @@
+@CHARSET "UTF-8";
+
+.wrap-outer {
+    margin-left: calc(100vw - 100%);
+    /* 居中定宽主体的父级  */
+}
+
+.main-div {
+    width: 1100px;
+    padding: 30px 15px;
+    margin: 0 auto;
+}
+
+.video-poster-div {
+    position: relative;
+    height: 180px;
+    width: 320px;
+    border: 1px solid #DDD;
+    border-radius: 4px;
+    float: left;
+    display: inline-block;
+    margin: 5px 0px;
+}
+
+.video-poster-div .close {
+    position: absolute;
+    right: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 50%;
+    font-size: 20px;
+    z-index: 999;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #FF5722;
+    color: #fff;
+    display: none;
+}
+
+.video-poster {
+    position: relative;
+    height: 180px;
+    width: 320px;
+    border-radius: 4px;
+    cursor: pointer;
+    line-height: 170px;
+    text-align: center;
+}
+
+.video-info {
+    position: relative;
+    height: 180px;
+    margin-left: 10px;
+    float: left;
+    display: inline-block;
+}
+
+.resource-info {
+    position: relative;
+    margin: 10px 0px;
+    display: inline-block;
+}
+
+.resource-item {
+    margin-top: 15px;
+    width: 1000px;
+    display: none;
+}
+
+.resource-item-info {
+    width: 919px;
+    display: inline-block;
+}
+
+.display-none {
+    display: none;
+}
+
+.margin-bottom10 {
+    margin-bottom: 10px;
+}
+
+.margin-bottom5 {
+    margin-bottom: 5px;
+}
+
+.textarea {
+    resize: none;
+    height: 200px;
+}
+
+.submit-button-div {
+    display: inline-block;
+    position: fixed;
+    margin-left: 20px;
+    bottom: 100px;
+    z-index: 99999;
+}
+
+.resource-info-div {
+    margin-top: 15px;
+    width: 1000px;
+}
+
+.del {
+    position: relative;;
+    float: right;
+    right: 30px;
+    top: 5px;
+    display: inline-block;
+}
+
+.layui-form-item {
+    margin: 5px 0px;
+}
+
+.layui-form-item .small {
+    width: 150px;
+}
+
+.i-del {
+    position: absolute;
+    margin-left: 284px;
+    font-size: 26px;
+    color: #DDD;
+    cursor: pointer;
+    display: none;
+    z-index: 99999;
+}

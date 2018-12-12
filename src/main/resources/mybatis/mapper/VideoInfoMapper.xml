@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.videorecord.dao.mapper.VideoInfoMapper">
+    <resultMap id="BaseResultMap" type="com.videorecord.entity.VideoInfo">
+        <id column="video_id" property="videoId" jdbcType="VARCHAR"/>
+        <result column="video_name" property="videoName" jdbcType="VARCHAR"/>
+        <result column="video_episode" property="videoEpisode" jdbcType="VARCHAR"/>
+        <result column="video_broadcast_time" property="videoBroadcastTime" jdbcType="TIMESTAMP"/>
+        <result column="video_type" property="videoType" jdbcType="VARCHAR"/>
+        <result column="video_season" property="videoSeason" jdbcType="VARCHAR"/>
+        <result column="video_country" property="videoCountry" jdbcType="VARCHAR"/>
+        <result column="video_source" property="videoSource" jdbcType="VARCHAR"/>
+        <result column="video_remark" property="videoRemark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="last_update_time" property="lastUpdateTime" jdbcType="TIMESTAMP"/>
+        <result column="have_bd_resource" property="haveBdResource" jdbcType="VARCHAR"/>
+        <result column="have_poster" property="havePoster" jdbcType="VARCHAR"/>
+        <result column="year" property="year" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="VARCHAR"/>
+        <collection property="videoResourceInfo" javaType="java.util.List"
+                    ofType="com.videorecord.entity.VideoResourceInfo">
+            <id column="resource_id" property="resourceId" jdbcType="INTEGER"/>
+            <result column="video_id" property="videoId" jdbcType="VARCHAR"/>
+            <result column="resource_type" property="resourceType" jdbcType="VARCHAR"/>
+            <result column="resource_format" property="resourceFormat" jdbcType="VARCHAR"/>
+            <result column="resource_resolution" property="resourceResolution" jdbcType="VARCHAR"/>
+            <result column="resource_sub" property="resourceSub" jdbcType="VARCHAR"/>
+            <result column="resource_sub_type" property="resourceSubType" jdbcType="VARCHAR"/>
+            <result column="resource_record_time" property="resourceRecordTime" jdbcType="TIMESTAMP"/>
+            <result column="resource_record_address" property="resourceRecordAddress" jdbcType="VARCHAR"/>
+            <result column="resource_remark" property="resourceRemark" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.videorecord.entity.VideoInfo" extends="BaseResultMap">
+        <result column="video_detail_info" property="videoDetailInfo" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    video_id, video_name, video_episode, video_broadcast_time, video_type, video_season, 
+    video_country, video_source, video_remark, create_time, last_update_time, have_bd_resource, 
+    have_poster
+  </sql>
+    <sql id="Blob_Column_List">
+    video_detail_info
+  </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs"
+            parameterType="com.videorecord.dao.pojo.VideoInfoExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from video_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.videorecord.dao.pojo.VideoInfoExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from video_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from video_info
+        where video_id = #{videoId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectVideoWithResourceByVideoId" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+        SELECT
+        t1.*,
+        t2.resource_id,
+        t2.resource_type,
+        t2.resource_format,
+        t2.resource_resolution,
+        t2.resource_sub,
+        t2.resource_sub_type,
+        t2.resource_record_time,
+        t2.resource_record_address,
+        t2.resource_remark
+        FROM
+        video_info t1
+        LEFT JOIN video_resource_info t2
+        ON t1.video_id = t2.video_id
+        <where>t1.video_id = #{videoId}</where>
+    </select>
+    <select id="selectVideoByComplexCondition" parameterType="com.videorecord.bean.video.req.VideoSearchReqBean"
+            resultMap="ResultMapWithBLOBs">
+        SELECT DISTINCT t1.*,t2.* FROM video_info t1 LEFT JOIN
+        video_resource_info
+        t2 ON t1.video_id = t2.video_id
+        <where>
+            video_type = #{videoType}
+            <if test="videoName != null and !(videoName.trim()).equals('') ">
+                and UPPER(t1.video_name) LIKE #{videoName}
+            </if>
+            <if test="yearBegin != null and !(yearBegin.trim()).equals('') ">
+                and DATE_FORMAT(t1.video_broadcast_time,'%Y') &gt;=
+                #{yearBegin}
+            </if>
+            <if test="yearEnd != null and !(yearEnd.trim()).equals('') ">
+                and DATE_FORMAT(t1.video_broadcast_time,'%Y') &lt;=
+                #{yearEnd}
+            </if>
+            <if test="episodeBegin != null and !(episodeBegin.trim()).equals('') ">
+                and CONVERT(t1.video_episode,SIGNED) &gt;=
+                CONVERT(#{episodeBegin},SIGNED)
+            </if>
+            <if test="episodeEnd != null and !(episodeEnd.trim()).equals('') ">
+                and CONVERT(t1.video_episode,SIGNED) &lt;=
+                CONVERT(#{episodeEnd},SIGNED)
+            </if>
+            <if test="address != null and !(address.trim()).equals('')
+				and address != 'ALL' ">
+                and t2.resource_record_address=#{address}
+            </if>
+            <if test="videoType.equals('动画') and animationSeason != null and animationSeason != '' and animationSeason != 'ALL'">
+                and t1.video_season=#{animationSeason}
+            </if>
+            <if test="country != null and !(country.trim()).equals('') and country != 'ALL' ">
+                and t1.video_country=#{country}
+            </if>
+            <if test="videoType.equals('番剧') and dramaSeason != null and dramaSeason != '' and dramaSeason != 'ALL'">
+                and t1.video_season=#{dramaSeason}
+            </if>
+            <if test="resourceType != null and !(resourceType.trim()).equals('') and resourceType != 'ALL' ">
+                and t2.resource_type=#{resourceType}
+            </if>
+            <if test="format != null and !(format.trim()).equals('') and format != 'ALL' ">
+                and t2.resource_format=#{format}
+            </if>
+            <if test="resolution != null and !(resolution.trim()).equals('') and resolution != 'ALL' ">
+                and t2.resource_resolution=#{resolution}
+            </if>
+            <if test="subType != null and !(subType.trim()).equals('') and subType != 'ALL' ">
+                and t2.resource_sub_type=#{subType}
+            </if>
+        </where>
+        order by t1.video_broadcast_time
+    </select>
+    <select id="selectChatrData" parameterType="com.videorecord.bean.video.req.VideoSearchReqBean"
+            resultMap="ResultMapWithBLOBs">
+		SELECT
+		t.video_season,
+		DATE_FORMAT(t.video_broadcast_time,
+		'%Y') AS year,
+		COUNT(*) AS count
+		FROM
+		video_info t
+		WHERE t.video_type =
+		#{videoType}
+		AND DATE_FORMAT(t.video_broadcast_time, '%Y') BETWEEN
+		#{yearBegin}
+		AND #{yearEnd}
+		GROUP BY t.video_season,
+		DATE_FORMAT(t.video_broadcast_time, '%Y')
+	</select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from video_info
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.videorecord.dao.pojo.VideoInfoExample">
+        delete from video_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.videorecord.entity.VideoInfo">
+    insert into video_info (video_id, video_name, video_episode, 
+      video_broadcast_time, video_type, video_season, 
+      video_country, video_source, video_remark, 
+      create_time, last_update_time, have_bd_resource, 
+      have_poster, video_detail_info)
+    values (#{videoId,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, #{videoEpisode,jdbcType=VARCHAR}, 
+      #{videoBroadcastTime,jdbcType=TIMESTAMP}, #{videoType,jdbcType=VARCHAR}, #{videoSeason,jdbcType=VARCHAR}, 
+      #{videoCountry,jdbcType=VARCHAR}, #{videoSource,jdbcType=VARCHAR}, #{videoRemark,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{lastUpdateTime,jdbcType=TIMESTAMP}, #{haveBdResource,jdbcType=VARCHAR}, 
+      #{havePoster,jdbcType=VARCHAR}, #{videoDetailInfo,jdbcType=LONGVARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.videorecord.entity.VideoInfo">
+        insert into video_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="videoId != null">
+                video_id,
+            </if>
+            <if test="videoName != null">
+                video_name,
+            </if>
+            <if test="videoEpisode != null">
+                video_episode,
+            </if>
+            <if test="videoBroadcastTime != null">
+                video_broadcast_time,
+            </if>
+            <if test="videoType != null">
+                video_type,
+            </if>
+            <if test="videoSeason != null">
+                video_season,
+            </if>
+            <if test="videoCountry != null">
+                video_country,
+            </if>
+            <if test="videoSource != null">
+                video_source,
+            </if>
+            <if test="videoRemark != null">
+                video_remark,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time,
+            </if>
+            <if test="haveBdResource != null">
+                have_bd_resource,
+            </if>
+            <if test="havePoster != null">
+                have_poster,
+            </if>
+            <if test="videoDetailInfo != null">
+                video_detail_info,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="videoId != null">
+                #{videoId,jdbcType=VARCHAR},
+            </if>
+            <if test="videoName != null">
+                #{videoName,jdbcType=VARCHAR},
+            </if>
+            <if test="videoEpisode != null">
+                #{videoEpisode,jdbcType=VARCHAR},
+            </if>
+            <if test="videoBroadcastTime != null">
+                #{videoBroadcastTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="videoType != null">
+                #{videoType,jdbcType=VARCHAR},
+            </if>
+            <if test="videoSeason != null">
+                #{videoSeason,jdbcType=VARCHAR},
+            </if>
+            <if test="videoCountry != null">
+                #{videoCountry,jdbcType=VARCHAR},
+            </if>
+            <if test="videoSource != null">
+                #{videoSource,jdbcType=VARCHAR},
+            </if>
+            <if test="videoRemark != null">
+                #{videoRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="haveBdResource != null">
+                #{haveBdResource,jdbcType=VARCHAR},
+            </if>
+            <if test="havePoster != null">
+                #{havePoster,jdbcType=VARCHAR},
+            </if>
+            <if test="videoDetailInfo != null">
+                #{videoDetailInfo,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.videorecord.dao.pojo.VideoInfoExample"
+            resultType="java.lang.Integer">
+        select count(*) from video_info
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update video_info
+        <set>
+            <if test="record.videoId != null">
+                video_id = #{record.videoId,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoName != null">
+                video_name = #{record.videoName,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoEpisode != null">
+                video_episode = #{record.videoEpisode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoBroadcastTime != null">
+                video_broadcast_time = #{record.videoBroadcastTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.videoType != null">
+                video_type = #{record.videoType,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoSeason != null">
+                video_season = #{record.videoSeason,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoCountry != null">
+                video_country = #{record.videoCountry,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoSource != null">
+                video_source = #{record.videoSource,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoRemark != null">
+                video_remark = #{record.videoRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.createTime != null">
+                create_time = #{record.createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.lastUpdateTime != null">
+                last_update_time = #{record.lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.haveBdResource != null">
+                have_bd_resource = #{record.haveBdResource,jdbcType=VARCHAR},
+            </if>
+            <if test="record.havePoster != null">
+                have_poster = #{record.havePoster,jdbcType=VARCHAR},
+            </if>
+            <if test="record.videoDetailInfo != null">
+                video_detail_info = #{record.videoDetailInfo,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update video_info
+        set video_id = #{record.videoId,jdbcType=VARCHAR},
+        video_name = #{record.videoName,jdbcType=VARCHAR},
+        video_episode = #{record.videoEpisode,jdbcType=VARCHAR},
+        video_broadcast_time = #{record.videoBroadcastTime,jdbcType=TIMESTAMP},
+        video_type = #{record.videoType,jdbcType=VARCHAR},
+        video_season = #{record.videoSeason,jdbcType=VARCHAR},
+        video_country = #{record.videoCountry,jdbcType=VARCHAR},
+        video_source = #{record.videoSource,jdbcType=VARCHAR},
+        video_remark = #{record.videoRemark,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        last_update_time = #{record.lastUpdateTime,jdbcType=TIMESTAMP},
+        have_bd_resource = #{record.haveBdResource,jdbcType=VARCHAR},
+        have_poster = #{record.havePoster,jdbcType=VARCHAR},
+        video_detail_info = #{record.videoDetailInfo,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update video_info
+        set video_id = #{record.videoId,jdbcType=VARCHAR},
+        video_name = #{record.videoName,jdbcType=VARCHAR},
+        video_episode = #{record.videoEpisode,jdbcType=VARCHAR},
+        video_broadcast_time = #{record.videoBroadcastTime,jdbcType=TIMESTAMP},
+        video_type = #{record.videoType,jdbcType=VARCHAR},
+        video_season = #{record.videoSeason,jdbcType=VARCHAR},
+        video_country = #{record.videoCountry,jdbcType=VARCHAR},
+        video_source = #{record.videoSource,jdbcType=VARCHAR},
+        video_remark = #{record.videoRemark,jdbcType=VARCHAR},
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+        last_update_time = #{record.lastUpdateTime,jdbcType=TIMESTAMP},
+        have_bd_resource = #{record.haveBdResource,jdbcType=VARCHAR},
+        have_poster = #{record.havePoster,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.videorecord.entity.VideoInfo">
+        update video_info
+        <set>
+            <if test="videoName != null">
+                video_name = #{videoName,jdbcType=VARCHAR},
+            </if>
+            <if test="videoEpisode != null">
+                video_episode = #{videoEpisode,jdbcType=VARCHAR},
+            </if>
+            <if test="videoBroadcastTime != null">
+                video_broadcast_time = #{videoBroadcastTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="videoType != null">
+                video_type = #{videoType,jdbcType=VARCHAR},
+            </if>
+            <if test="videoSeason != null">
+                video_season = #{videoSeason,jdbcType=VARCHAR},
+            </if>
+            <if test="videoCountry != null">
+                video_country = #{videoCountry,jdbcType=VARCHAR},
+            </if>
+            <if test="videoSource != null">
+                video_source = #{videoSource,jdbcType=VARCHAR},
+            </if>
+            <if test="videoRemark != null">
+                video_remark = #{videoRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastUpdateTime != null">
+                last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="haveBdResource != null">
+                have_bd_resource = #{haveBdResource,jdbcType=VARCHAR},
+            </if>
+            <if test="havePoster != null">
+                have_poster = #{havePoster,jdbcType=VARCHAR},
+            </if>
+            <if test="videoDetailInfo != null">
+                video_detail_info = #{videoDetailInfo,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where video_id = #{videoId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.videorecord.entity.VideoInfo">
+    update video_info
+    set video_name = #{videoName,jdbcType=VARCHAR},
+      video_episode = #{videoEpisode,jdbcType=VARCHAR},
+      video_broadcast_time = #{videoBroadcastTime,jdbcType=TIMESTAMP},
+      video_type = #{videoType,jdbcType=VARCHAR},
+      video_season = #{videoSeason,jdbcType=VARCHAR},
+      video_country = #{videoCountry,jdbcType=VARCHAR},
+      video_source = #{videoSource,jdbcType=VARCHAR},
+      video_remark = #{videoRemark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      have_bd_resource = #{haveBdResource,jdbcType=VARCHAR},
+      have_poster = #{havePoster,jdbcType=VARCHAR},
+      video_detail_info = #{videoDetailInfo,jdbcType=LONGVARCHAR}
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.videorecord.entity.VideoInfo">
+    update video_info
+    set video_name = #{videoName,jdbcType=VARCHAR},
+      video_episode = #{videoEpisode,jdbcType=VARCHAR},
+      video_broadcast_time = #{videoBroadcastTime,jdbcType=TIMESTAMP},
+      video_type = #{videoType,jdbcType=VARCHAR},
+      video_season = #{videoSeason,jdbcType=VARCHAR},
+      video_country = #{videoCountry,jdbcType=VARCHAR},
+      video_source = #{videoSource,jdbcType=VARCHAR},
+      video_remark = #{videoRemark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_update_time = #{lastUpdateTime,jdbcType=TIMESTAMP},
+      have_bd_resource = #{haveBdResource,jdbcType=VARCHAR},
+      have_poster = #{havePoster,jdbcType=VARCHAR}
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>resourceItem</title>
+</head>
+<body>
+<div th:fragment="resourceItem" class="resource-item" id="resource{id}">
+    <div class="resource-item-info">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">资源信息</label>
+                <div class="layui-input-inline small">
+                    <select name="resourceType" id="resourceType"
+                            lay-filter="resourceType">
+                        <option value="NORMAL">普通资源</option>
+                        <option value="BD">BD资源</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline small">
+                    <select name="resourceFormat" id="resourceFormat"
+                            lay-filter="resourceFormat">
+                        <option value="MP4">MP4</option>
+                        <option value="MKV">MKV</option>
+                        <option value="RMVB">RMVB</option>
+                        <option value="AVI">AVI</option>
+                        <option value="OTHER">其他</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline small">
+                    <select name="resourceResolution" id="resourceResolution"
+                            lay-filter="resourceResolution">
+                        <option value="1280*720" selected="selected">1280*720</option>
+                        <option value="1920*1080">1920*1080</option>
+                        <option value="1440*1080">1440*1080</option>
+                        <option value="848*480">848*480</option>
+                        <option value="1024*576">1024*576</option>
+                        <option value="960*576">960*576</option>
+                        <option value="3840*2160">3840*2160</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline small">
+                    <select name="resourceSub" id="resourceSub"
+                            lay-filter="resourceSub">
+                        <option value="1">有字幕</option>
+                        <option value="0">无字幕</option>
+                    </select>
+                </div>
+                <div class="layui-input-inline small">
+                    <select name="resourceSubType" id="resourceSubType"
+                            lay-filter="resourceSubType">
+                        <option value="内嵌">内嵌</option>
+                        <option value="封装">封装</option>
+                        <option value="外挂">外挂</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">收录地址</label>
+                <div class="layui-input-inline" style="width: 309px;">
+                    <select name="resourceRecordAddress"
+                            id="resourceRecordAddress"
+                            lay-filter="resourceRecordAddress">
+                        <option th:each="disk,diskStat:${diskList}" th:value="${disk.diskId}"
+                                th:text="${disk.videoType+ ':'+  disk.diskName}">
+                        </option>
+                    </select>
+                </div>
+                <label class="layui-form-label">收录时间</label>
+                <div class="layui-input-inline">
+                    <input name="resourceRecordTime"
+                           lay-verify="resourceRecordTime" id="resourceRecordTime{id}"
+                           autocomplete="off" class="layui-input" type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-inline" style="width: 787px;">
+                        <input maxlength="55" name="resourceRemark"
+                               lay-verify="resourceRemark" id="resourceRemark" value=""
+                               autocomplete="off" class="layui-input" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div
+            class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm del"
+            id="resourceDel{id}" onclick="resourceDel('resource{id}')">
+        <span>删除</span>
+    </div>
+</div>
+<!---->
+<div th:fragment="resourceItemWithData" class="resource-info-div"
+     th:each="resource,resourceStat:${video.videoResourceInfo}"
+     th:if="${resource.resourceType != null} " th:id="'resource'+${resource.resourceId}">
+    <div style="width: 919px; display: inline-block;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">资源信息</label>
+            <div class="layui-input-inline small">
+                <select name="resourceType" th:id="${'resourceType'+resource.resourceId}"
+                        lay-filter="resourceType">
+                    <option value="NORMAL" th:selected="${resource.resourceType == 'NORMAL' }">普通资源
+                    </option>
+                    <option value="BD" th:selected="${resource.resourceType == 'BD' }">BD资源</option>
+                </select>
+            </div>
+            <div class="layui-input-inline small">
+                <select name="resourceFormat" th:id="${'resourceFormat'+resource.resourceId}"
+                        lay-filter="resourceFormat">
+                    <option value="MP4" th:selected="${resource.resourceFormat == 'MP4' }">MP4</option>
+                    <option value="MKV" th:selected="${resource.resourceFormat == 'MKV' }">MKV</option>
+                    <option value="RMVB" th:selected="${resource.resourceFormat == 'RMVB' }">RMVB
+                    </option>
+                    <option value="AVI" th:selected="${resource.resourceFormat == 'AVI' }">AVI</option>
+                    <option value="OTHER" th:selected="${resource.resourceFormat == 'OTHER' }">其他
+                    </option>
+                </select>
+            </div>
+            <div class="layui-input-inline small">
+                <select name="resourceResolution" th:id="${'resourceResolution'+resource.resourceId}"
+                        lay-filter="resourceResolution">
+                    <option value="1280*720"
+                            th:selected="${resource.resourceResolution == '1280*720' }"
+                            th:text="${'1280*720'}">
+                    </option>
+                    <option value="1920*1080"
+                            th:selected="${resource.resourceResolution == '1920*1080' }"
+                            th:text="${'1920*1080'}">
+                    </option>
+                    <option value="848*480" th:selected="${resource.resourceResolution == '848*480' }"
+                            th:text="${'848*480'}">
+
+                    </option>
+                    <option value="960*576" th:selected="${resource.resourceResolution == '960*576' }"
+                            th:text="${'960*576'}">
+
+                    </option>
+                    <option value="1024*576"
+                            th:selected="${resource.resourceResolution == '1024*576' }"
+                            th:text="${'1024*576'}">
+                    </option>
+                    <option value="1440*1080"
+                            th:selected="${resource.resourceResolution == '1440*1080' }"
+                            th:text="${'1440*1080'}">
+                    </option>
+                    <option value="3840*2160"
+                            th:selected="${resource.resourceResolution == '3840*2160' }"
+                            th:text="${'3840*2160'}">
+                    </option>
+                </select>
+            </div>
+            <div class="layui-input-inline small">
+                <select name="resourceSub" th:id="${'resourceSub'+resource.resourceId}"
+                        lay-filter="resourceSub">
+                    <option value="1" th:selected="${resource.resourceSub == '1'}">有字幕</option>
+                    <option value="0" th:selected="${resource.resourceSub == '0'}">无字幕</option>
+                </select>
+            </div>
+            <div class="layui-input-inline small">
+                <select name="resourceSubType" th:id="${'resourceSubType'+resource.resourceId}"
+                        lay-filter="resourceSubType">
+                    <option value="内嵌" th:selected="${resource.resourceSubType == '内嵌'}">内嵌</option>
+                    <option value="封装" th:selected="${resource.resourceSubType == '封装'}">封装</option>
+                    <option value="外挂" th:selected="${resource.resourceSubType == '外挂'}">外挂</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">收录地址</label>
+            <div class="layui-input-inline" style="width: 309px;">
+                <select name="resourceRecordAddress"
+                        th:id="${'resourceRecordAddress'+resource.resourceId}">
+                    <option th:each="disk,diskStat:${diskList}" th:value="${disk.diskId}"
+                            th:selected="${resource.resourceRecordAddress ==disk.diskId }"
+                            th:text="${disk.videoType+ ':'+  disk.diskName}">
+                    </option>
+                </select>
+            </div>
+            <label class="layui-form-label">收录时间</label>
+            <div class="layui-input-inline">
+                <input name="resourceRecordTime" readonly="readonly" lay-verify="resourceRecordTime"
+                       th:id="${'resourceRecordTime'+resource.resourceId}"
+                       th:value="${#dates.format(resource.resourceRecordTime,'yyyy-MM-dd')}"
+                       autocomplete="off" class="layui-input" type="text">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-inline" style="width: 787px;">
+                <input name="resourceRemark" lay-verify="resourceRemark"
+                       th:id="${'resourceRemark'+resource.resourceId}"
+                       th:value="${resource.resourceRemark}"
+                       maxlength="55" autocomplete="off"
+                       class="layui-input" type="text">
+            </div>
+        </div>
+    </div>
+    <div class="layui-btn layui-btn-radius layui-btn-danger layui-btn-sm del"
+         th:id="${'resourceDel'+resource.resourceId}"
+         th:onclick="'javascript:resourceDel(\'resource'+${resource.resourceId}+'\')'">
+        <span>删除</span>
+    </div>
+</div>
+</body>
+</html>
